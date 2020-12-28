@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+typedef struct no {
+  int dado;
+  struct no *esq, *dir;
+} no;
+typedef struct pilha{
+    no *topo;
+    struct pilha *prox; 
+}pilha;
+pilha *criapilha (){
+    pilha *topo = malloc(sizeof(pilha));
+    topo->prox = NULL;
+    return topo;
+}
+no *criar_arvore (int x, no *esq, no *dir) {
+  no *raiz = malloc (sizeof (no));
+  raiz->dado = x;
+  raiz->esq = esq;
+  raiz->dir = dir;
+  return raiz;
+}
+void empilha (pilha *topo, no *x){
+    pilha *novo = malloc(sizeof(pilha));
+    novo->topo = x;
+    novo->prox = topo->prox;
+    topo->prox = novo;
+}
+no *desempilha (pilha *topo){
+    pilha *lixo = topo->prox;
+    no *x = lixo->topo;
+    topo->prox = lixo->prox;
+    free(lixo);
+    return x;
+}
+bool pilhavazia (pilha* p){
+ if(p->prox == NULL) return false;
+  return true;
+}
+void em_ordem (no *raiz){
+   pilha *p = criapilha();
+   empilha (p, raiz);
+   while (true) {
+      raiz = desempilha (p);
+      if (raiz != NULL) {
+         empilha (p, raiz);
+         empilha (p,raiz->esq);
+      }
+      else {
+         if (pilhavazia (p)) break;
+         raiz = desempilha (p);
+         printf ("%d\n", raiz->dado);
+         empilha (p, raiz->dir);
+      }
+   }
+}
